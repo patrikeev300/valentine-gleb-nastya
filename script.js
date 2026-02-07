@@ -156,3 +156,117 @@ playBtn.addEventListener('click', () => {
     playBtn.textContent = "Включи нашу песню ♡";
   }
 });
+
+// Мини-игра "Лови сердечки"
+const gameCanvas = document.getElementById('gameCanvas');
+const gameCtx = gameCanvas.getContext('2d');
+const startBtn = document.getElementById('startGameBtn');
+const scoreEl = document.getElementById('gameScore');
+const timerEl = document.getElementById('gameTimer');
+const resultEl = document.getElementById('gameResult');
+const finalScoreEl = document.getElementById('finalScore');
+
+let gameRunning = false;
+let score = 0;
+let timeLeft = 30;
+let hearts = [];
+let mouse = { x: 0, y: 0 };
+
+function createHeartGame() {
+  return {
+    x: Math.random() * (gameCanvas.width - 40) + 20,
+    y: -50,
+    size: Math.random() * 30 + 25,
+    speed: Math.random() * 2 + 1.5
+  };
+}
+
+function drawHeartGame(h) {
+  gameCtx.save();
+  gameCtx.translate(h.x, h.y);
+  gameCtx.fillStyle = '#ff1493';
+  gameCtx.beginPath();
+  gameCtx.moveTo(0, -h.size/2);
+  gameCtx.bezierCurveTo(h.size/2, -h.size, h.size, -h.size/3, 0, h.size/2);
+  gameCtx.bezierCurveTo(-h.size, -h.size/3, -h.size/2, -h.size, 0, -h.size/2);
+  gameCtx.fill();
+  gameCtx.restore();
+}
+
+function updateGame() {
+  if (!gameRunning) return;
+
+  gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+  hearts.forEach((h, i) => {
+    h.y += h.speed;
+
+    // Проверка ловли (расстояние до мыши < размер сердца)
+    const dx = h.x - mouse.x;
+    const dy = h.y - mouse.y;
+    if (Math.sqrt(dx*dx + dy*dy) < h.size * 0.8) {
+      score++;
+      scoreEl.textContent = `Счёт: ${score}`;
+      hearts.splice(i, 1); // удаляем пойманное
+      hearts.push(createHeartGame()); // новое появляется сверху
+    }
+
+    if (h.y > gameCanvas.height + 50) {
+      hearts.splice(i, 1);
+      hearts.push(createHeartGame());
+    }
+
+    drawHeartGame(h);
+  });
+
+  requestAnimationFrame(updateGame);
+}
+
+// Таймер
+let timerInterval;
+function startTimer() {
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = `Время: ${timeLeft}`;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      gameRunning = false;
+      finalScoreEl.textContent = score;
+      resultEl.classList.remove('hidden');
+      startBtn.textContent = "Играть ещё раз?";
+      startBtn.disabled = false;
+    }
+  }, 1000);
+}
+
+startBtn.addEventListener('click', () => {
+  if (gameRunning) return;
+  gameRunning = true;
+  score = 0;
+  timeLeft = 30;
+  scoreEl.textContent = `Счёт: 0`;
+  timerEl.textContent = `Время: 30`;
+  resultEl.classList.add('hidden');
+  startBtn.disabled = true;
+  startBtn.textContent = "Лови!";
+
+  hearts = [];
+  for (let i = 0; i < 8; i++) hearts.push(createHeartGame());
+
+  updateGame();
+  startTimer();
+});
+
+// Отслеживание мыши (или тач для мобилы)
+gameCanvas.addEventListener('mousemove', e => {
+  const rect = gameCanvas.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left;
+  mouse.y = e.clientY - rect.top;
+});
+
+gameCanvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const rect = gameCanvas.getBoundingClientRect();
+  mouse.x = e.touches[0].clientX - rect.left;
+  mouse.y = e.touches[0].clientY - rect.top;
+});
