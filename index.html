@@ -14,25 +14,20 @@
 
 <canvas id="hearts"></canvas>
 
-<div class="container">
+<div class="container" id="mainPage">
   <header class="fade-in">
     <h1>Привет, моя Настюша ❤️</h1>
-    <p class="subtitle">07.02.2026 → навсегда с тобой</p>
+    <p class="subtitle">3 года вместе… и это только начало</p>
   </header>
 
-  <section class="photo-section fade-in">
-    <div class="photo-frame">
-      <img src="our-photo.jpg" alt="Мы с тобой" id="couplePhoto">
-    </div>
-  </section>
+  <div class="hero-photo fade-in">
+    <img src="assets/our-photo-main.jpg" alt="Мы вместе">
+  </div>
 
-  <section class="story fade-in">
-    <h2>Наша история</h2>
-    <p>Нам обоим по <strong>21 году</strong>, и уже <strong>3 года</strong> мы вместе — лучшее, что могло случиться.</p>
-    <p>Познакомились в техникуме, оба загорелись идеей стать топ-селлерами на Wildberries 😎</p>
-    <p>Ты — мой огонь, моя поддержка, мой самый большой смех и самый нежный взгляд.</p>
-    <p>Каждый день с тобой — как маленький праздник 💕</p>
-  </section>
+  <div class="countdown fade-in">
+    <h3>До нашего особенного дня осталось:</h3>
+    <div id="timer">Загрузка...</div>
+  </div>
 
   <section class="question-section fade-in">
     <p class="question">Настенька, будешь моей Валентинкой... навсегда?</p>
@@ -46,30 +41,27 @@
   </section>
 
   <section class="game-section fade-in">
-    <h2>Мини-игра: Лови мои сердечки для тебя! 💕</h2>
-    <p>Наводи мышкой (или пальцем) на сердечки — набирай очки. 30 секунд на всё!</p>
-    
+    <h2>Мини-игра: Лови мои сердечки!</h2>
+    <p>Собери как можно больше за 35 секунд. Чем больше — тем круче сюрприз 💕</p>
     <div class="game-container">
-        <canvas id="gameCanvas" width="600" height="400"></canvas>
-        <div id="gameScore">Счёт: 0</div>
-        <div id="gameTimer">Время: 30</div>
-        <button id="startGameBtn">Начать ловить! ❤️</button>
+      <canvas id="gameCanvas" width="640" height="420"></canvas>
+      <div id="gameScore">0</div>
+      <div id="gameTimer">35</div>
+      <button id="startGameBtn">Начать ловить! ❤️</button>
     </div>
-    
-    <p id="gameResult" class="hidden">Ура! Ты поймала <span id="finalScore">0</span> сердечек! Ты моя чемпионка! 🏆</p>
-    </section>
-
-  <section class="music-section fade-in">
-    <button id="playBtn" class="audio-btn">Включи нашу песню ♡</button>
-    <audio id="loveSong" loop>
-      <source src="love-song.mp3" type="audio/mpeg">
-      Твой браузер не поддерживает аудио.
-    </audio>
+    <p id="gameResult" class="hidden">Ты поймала <span id="finalScore">0</span> сердечек! 🏆</p>
   </section>
 
-  <footer>
-    С безумной любовью твой Глеб 💌 14 февраля 2026
-  </footer>
+  <div class="nav-buttons fade-in">
+    <a href="gallery.html" class="nav-btn">Посмотреть наши фото →</a>
+  </div>
+
+  <audio id="loveSong" loop>
+    <source src="assets/love-song.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="catchSound" src="https://assets.codepen.io/605876/coin.mp3"></audio>
+
+  <footer>С любовью, твой Глеб • февраль 2026 💌</footer>
 </div>
 
 <script src="script.js"></script>
