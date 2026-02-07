@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Наши моменты — Настя & Глеб 💞</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Dancing+Script:wght@600;700&family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="gallery-body">
+
+<canvas id="hearts"></canvas>
+
+<div class="container gallery-container">
+  <h1>Наши лучшие моменты</h1>
+
+  <div class="photo-grid">
+    <div class="photo-item"><img src="assets/photo-1.jpg" alt="1" loading="lazy"></div>
+    <div class="photo-item"><img src="assets/photo-2.jpg" alt="2" loading="lazy"></div>
+    <div class="photo-item"><img src="assets/photo-3.jpg" alt="3" loading="lazy"></div>
+    <div class="photo-item"><img src="assets/photo-4.jpg" alt="4" loading="lazy"></div>
+    <!-- Добавь ещё фото по желанию -->
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <span class="close">&times;</span>
+    <img class="lightbox-content" id="lightboxImg">
+  </div>
+
+  <div class="nav-buttons">
+    <a href="index.html" class="nav-btn">← Назад к главному вопросу</a>
+    <a href="invitation.html" class="nav-btn">Приглашение на свидание →</a>
+  </div>
+
+  <footer>Глеб & Настя forever 💕</footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,272 +1,301 @@
-// 1. Падающие сердечки
+// Общие сердечки на фоне
 const canvas = document.getElementById('hearts');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let particles = [];
-
-function createParticle() {
-  return {
-    x: Math.random() * canvas.width,
-    y: Math.random() * -100,
-    size: Math.random() * 18 + 12,
-    speedY: Math.random() * 1.8 + 0.9,
-    rotation: Math.random() * 360,
-    rotSpeed: Math.random() * 3 - 1.5,
-    opacity: Math.random() * 0.4 + 0.6
-  };
-}
-
-for (let i = 0; i < 50; i++) particles.push(createParticle());
-
-function drawHeart(p) {
-  ctx.save();
-  ctx.globalAlpha = p.opacity;
-  ctx.translate(p.x, p.y);
-  ctx.rotate(p.rotation * Math.PI / 180);
-  ctx.fillStyle = `hsl(${Math.random()*30 + 330}, 90%, 60%)`;
-  ctx.beginPath();
-  ctx.moveTo(0, -p.size/2);
-  ctx.bezierCurveTo(p.size/2, -p.size, p.size, -p.size/3, 0, p.size/2);
-  ctx.bezierCurveTo(-p.size, -p.size/3, -p.size/2, -p.size, 0, -p.size/2);
-  ctx.fill();
-  ctx.restore();
-}
-
-function animateHearts() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach(p => {
-    p.y += p.speedY;
-    p.rotation += p.rotSpeed;
-    if (p.y > canvas.height + 50) {
-      p.y = -50;
-      p.x = Math.random() * canvas.width;
-    }
-    drawHeart(p);
-  });
-  requestAnimationFrame(animateHearts);
-}
-animateHearts();
-
-window.addEventListener('resize', () => {
+if (canvas) {
+  const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+
+  let particles = [];
+
+  function createParticle() {
+    return {
+      x: Math.random() * canvas.width,
+      y: -60,
+      size: Math.random() * 22 + 14,
+      speed: Math.random() * 1.6 + 0.9,
+      rot: Math.random() * 360,
+      rotSp: Math.random() * 3 - 1.5,
+      opacity: Math.random() * 0.5 + 0.55
+    };
+  }
+
+  for (let i = 0; i < 55; i++) particles.push(createParticle());
+
+  function drawHeart(p) {
+    ctx.save();
+    ctx.globalAlpha = p.opacity;
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot * Math.PI / 180);
+    ctx.fillStyle = `hsl(${330 + Math.random()*30}, 95%, 65%)`;
+    ctx.beginPath();
+    ctx.moveTo(0, -p.size/2);
+    ctx.bezierCurveTo(p.size/2, -p.size, p.size, -p.size/3, 0, p.size/2);
+    ctx.bezierCurveTo(-p.size, -p.size/3, -p.size/2, -p.size, 0, -p.size/2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function animateHearts() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p => {
+      p.y += p.speed;
+      p.rot += p.rotSp;
+      if (p.y > canvas.height + 60) {
+        p.y = -60;
+        p.x = Math.random() * canvas.width;
+      }
+      drawHeart(p);
+    });
+    requestAnimationFrame(animateHearts);
+  }
+  animateHearts();
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+}
+
+// Fade-in при появлении
+document.querySelectorAll('.fade-in').forEach(el => {
+  setTimeout(() => el.classList.add('visible'), 300);
 });
 
-// 2. Fade-in при скролле / загрузке
-const fadeElements = document.querySelectorAll('.fade-in');
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
+// Таймер обратного отсчёта до 14 февраля 2026
+const countdownEl = document.getElementById('timer');
+if (countdownEl) {
+  const targetDate = new Date('2026-02-14T19:00:00').getTime();
+
+  function updateTimer() {
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    if (distance < 0) {
+      countdownEl.innerHTML = "УРА! Сегодня наш день! 🎉";
+      return;
     }
-  });
-}, { threshold: 0.1 });
 
-fadeElements.forEach(el => observer.observe(el));
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-// 3. Кнопка "Нет" — убегает, меняет текст и размер
+    countdownEl.innerHTML = `${days} дн ${hours} ч ${minutes} мин ${seconds} сек`;
+  }
+
+  setInterval(updateTimer, 1000);
+  updateTimer();
+}
+
+// Убегающая кнопка "Нет"
 const noBtn = document.getElementById('noBtn');
-const funnyMessages = [
-  "Ой-ой, кнопочка стесняется... 😳",
-  "Настюш, ну пожалуйста, подумай ещё разок 🥺",
-  "Я же твой Глебик, как можно отказать? 😭",
-  "Она убегает, потому что знает — ДА лучше! 💨",
-  "Последний шанс сказать ДАААА 😏",
-  "Ты серьёзно? Мое сердечко разобьётся... 💔"
-];
-let msgIdx = 0;
-let noClickCount = 0;
+if (noBtn) {
+  const funny = [
+    "Ой, Настюш... ну пожалуйста 🥺",
+    "Кнопка стесняется, но сердце говорит ДА!",
+    "Я же твой Глебик... как можно отказать? 😭",
+    "Она убегает, потому что знает — ДА лучше 💨",
+    "Последний шанс сказать ДААА 😏"
+  ];
+  let idx = 0;
 
-noBtn.addEventListener('mouseover', (e) => {
-  if (noClickCount > 3) return; // после 4 кликов перестаёт убегать
+  noBtn.addEventListener('mouseover', e => {
+    const btn = e.target;
+    const maxX = window.innerWidth - btn.offsetWidth - 80;
+    const maxY = window.innerHeight - btn.offsetHeight - 80;
 
-  const btn = e.target;
-  const maxX = window.innerWidth - btn.offsetWidth - 60;
-  const maxY = window.innerHeight - btn.offsetHeight - 60;
+    btn.style.position = 'absolute';
+    btn.style.left = Math.random() * maxX + 'px';
+    btn.style.top = Math.random() * maxY + 'px';
 
-  btn.style.position = 'absolute';
-  btn.style.left = Math.random() * maxX + 'px';
-  btn.style.top = Math.random() * maxY + 'px';
+    btn.textContent = funny[idx % funny.length];
+    idx++;
+  });
+}
 
-  btn.textContent = funnyMessages[msgIdx % funnyMessages.length];
-  msgIdx++;
-
-  // Уменьшаем кнопку после каждого раза
-  const currentSize = parseFloat(getComputedStyle(btn).fontSize);
-  if (currentSize > 14) {
-    btn.style.fontSize = (currentSize - 3) + 'px';
-    btn.style.padding = (parseFloat(getComputedStyle(btn).padding) - 6) + 'px ' + (parseFloat(getComputedStyle(btn).paddingLeft) - 12) + 'px';
-  }
-});
-
-noBtn.addEventListener('click', () => {
-  noClickCount++;
-  noBtn.textContent = "Ладно... но я всё равно тебя ОЧЕНЬ люблю 💔";
-  if (noClickCount > 5) noBtn.style.display = 'none';
-});
-
-// 4. Кнопка "Да" → конфетти + сообщение
+// Кнопка "Да" → сообщение + переход на приглашение
 const yesBtn = document.getElementById('yesBtn');
-const messageEl = document.getElementById('message');
+if (yesBtn) {
+  yesBtn.addEventListener('click', () => {
+    const msg = document.getElementById('message');
+    msg.innerHTML = `УРАААА! 💖💖💖<br>Ты сделала меня самым счастливым!<br>Переходи скорее → <a href="invitation.html" style="color:#ff4081; font-weight:bold;">Открыть приглашение</a>`;
+    msg.style.opacity = 1;
 
-yesBtn.addEventListener('click', () => {
-  messageEl.innerHTML = `УРААААА! 💖💖💖<br>
-  Ты — моя самая-самая, Настенька!<br>
-  Люблю тебя безумно сильно и навсегда 😘🌟<br>
-  Самый счастливый Глеб на планете!`;
-  messageEl.classList.add('show');
+    // Конфетти
+    const end = Date.now() + 5000;
+    (function frame() {
+      confetti({ particleCount: 9, angle: 60, spread: 70, origin: { x: 0 } });
+      confetti({ particleCount: 9, angle: 120, spread: 70, origin: { x: 1 } });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
 
-  // Конфетти взрыв
-  const end = Date.now() + 6000;
-  (function frame() {
-    confetti({
-      particleCount: 10,
-      angle: 60,
-      spread: 70,
-      origin: { x: 0 },
-      colors: ['#ff0', '#f00', '#ff69b4', '#ba55d3']
-    });
-    confetti({
-      particleCount: 10,
-      angle: 120,
-      spread: 70,
-      origin: { x: 1 },
-      colors: ['#ff1493', '#ff4081', '#c2185b']
-    });
-    if (Date.now() < end) requestAnimationFrame(frame);
-  })();
+    document.querySelector('.buttons').style.display = 'none';
+  });
+}
 
-  document.querySelector('.buttons').style.display = 'none';
-});
-
-// 5. Музыка
-const playBtn = document.getElementById('playBtn');
-const audio = document.getElementById('loveSong');
-
-playBtn.addEventListener('click', () => {
-  if (audio.paused) {
-    audio.play().catch(() => {
-      alert("Нажми ещё раз после любого клика по странице — браузер так разрешает музыку");
-    });
-    playBtn.textContent = "Пауза ♡";
-  } else {
-    audio.pause();
-    playBtn.textContent = "Включи нашу песню ♡";
-  }
-});
-
-// Мини-игра "Лови сердечки"
+// Мини-игра
 const gameCanvas = document.getElementById('gameCanvas');
-const gameCtx = gameCanvas.getContext('2d');
-const startBtn = document.getElementById('startGameBtn');
-const scoreEl = document.getElementById('gameScore');
-const timerEl = document.getElementById('gameTimer');
-const resultEl = document.getElementById('gameResult');
-const finalScoreEl = document.getElementById('finalScore');
+if (gameCanvas) {
+  const ctx = gameCanvas.getContext('2d');
+  const startBtn = document.getElementById('startGameBtn');
+  const scoreEl = document.getElementById('gameScore');
+  const timerEl = document.getElementById('gameTimer');
+  const resultEl = document.getElementById('gameResult');
+  const finalScore = document.getElementById('finalScore');
+  const catchSound = document.getElementById('catchSound');
 
-let gameRunning = false;
-let score = 0;
-let timeLeft = 30;
-let hearts = [];
-let mouse = { x: 0, y: 0 };
+  let running = false;
+  let score = 0;
+  let time = 35;
+  let hearts = [];
+  let mouse = { x: 0, y: 0 };
 
-function createHeartGame() {
-  return {
-    x: Math.random() * (gameCanvas.width - 40) + 20,
-    y: -50,
-    size: Math.random() * 30 + 25,
-    speed: Math.random() * 2 + 1.5
-  };
-}
+  function spawnHeart() {
+    return {
+      x: Math.random() * (gameCanvas.width - 50) + 25,
+      y: -60,
+      size: Math.random() * 35 + 28,
+      speed: Math.random() * 2.2 + 1.8 + (score > 20 ? 0.6 : 0)
+    };
+  }
 
-function drawHeartGame(h) {
-  gameCtx.save();
-  gameCtx.translate(h.x, h.y);
-  gameCtx.fillStyle = '#ff1493';
-  gameCtx.beginPath();
-  gameCtx.moveTo(0, -h.size/2);
-  gameCtx.bezierCurveTo(h.size/2, -h.size, h.size, -h.size/3, 0, h.size/2);
-  gameCtx.bezierCurveTo(-h.size, -h.size/3, -h.size/2, -h.size, 0, -h.size/2);
-  gameCtx.fill();
-  gameCtx.restore();
-}
+  function drawHeart(h) {
+    ctx.save();
+    ctx.translate(h.x, h.y);
+    ctx.fillStyle = '#ff1493';
+    ctx.beginPath();
+    ctx.moveTo(0, -h.size/2);
+    ctx.bezierCurveTo(h.size/2, -h.size, h.size, -h.size/3, 0, h.size/2);
+    ctx.bezierCurveTo(-h.size, -h.size/3, -h.size/2, -h.size, 0, -h.size/2);
+    ctx.fill();
+    ctx.restore();
+  }
 
-function updateGame() {
-  if (!gameRunning) return;
+  function gameLoop() {
+    if (!running) return;
 
-  gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+    ctx.clearRect(0,0,gameCanvas.width,gameCanvas.height);
 
-  hearts.forEach((h, i) => {
-    h.y += h.speed;
+    hearts.forEach((h,i) => {
+      h.y += h.speed;
 
-    // Проверка ловли (расстояние до мыши < размер сердца)
-    const dx = h.x - mouse.x;
-    const dy = h.y - mouse.y;
-    if (Math.sqrt(dx*dx + dy*dy) < h.size * 0.8) {
-      score++;
-      scoreEl.textContent = `Счёт: ${score}`;
-      hearts.splice(i, 1); // удаляем пойманное
-      hearts.push(createHeartGame()); // новое появляется сверху
-    }
+      const dx = h.x - mouse.x;
+      const dy = h.y - mouse.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
 
-    if (h.y > gameCanvas.height + 50) {
-      hearts.splice(i, 1);
-      hearts.push(createHeartGame());
-    }
+      if (dist < h.size * 0.9) {
+        score++;
+        scoreEl.textContent = score;
+        hearts.splice(i,1);
+        hearts.push(spawnHeart());
+        catchSound.currentTime = 0;
+        catchSound.play().catch(()=>{});
+      }
 
-    drawHeartGame(h);
+      if (h.y > gameCanvas.height + 60) {
+        hearts.splice(i,1);
+        hearts.push(spawnHeart());
+      }
+
+      drawHeart(h);
+    });
+
+    requestAnimationFrame(gameLoop);
+  }
+
+  let timerId;
+  startBtn.addEventListener('click', () => {
+    if (running) return;
+    running = true;
+    score = 0;
+    time = 35;
+    scoreEl.textContent = 0;
+    timerEl.textContent = 35;
+    resultEl.classList.add('hidden');
+    startBtn.disabled = true;
+    startBtn.textContent = "Лови!";
+
+    hearts = [];
+    for (let i = 0; i < 10; i++) hearts.push(spawnHeart());
+
+    gameLoop();
+
+    timerId = setInterval(() => {
+      time--;
+      timerEl.textContent = time;
+      if (time <= 0) {
+        clearInterval(timerId);
+        running = false;
+        finalScore.textContent = score;
+        resultEl.classList.remove('hidden');
+        startBtn.disabled = false;
+        startBtn.textContent = "Ещё раз?";
+      }
+    }, 1000);
   });
 
-  requestAnimationFrame(updateGame);
+  gameCanvas.addEventListener('mousemove', e => {
+    const r = gameCanvas.getBoundingClientRect();
+    mouse.x = e.clientX - r.left;
+    mouse.y = e.clientY - r.top;
+  });
+
+  gameCanvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    const r = gameCanvas.getBoundingClientRect();
+    mouse.x = e.touches[0].clientX - r.left;
+    mouse.y = e.touches[0].clientY - r.top;
+  });
 }
 
-// Таймер
-let timerInterval;
-function startTimer() {
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    timerEl.textContent = `Время: ${timeLeft}`;
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      gameRunning = false;
-      finalScoreEl.textContent = score;
-      resultEl.classList.remove('hidden');
-      startBtn.textContent = "Играть ещё раз?";
-      startBtn.disabled = false;
-    }
-  }, 1000);
+// Музыка
+const music = document.getElementById('loveSong');
+if (music) {
+  document.addEventListener('click', () => {
+    if (music.paused) music.play().catch(()=>{});
+  }, { once: true });
 }
 
-startBtn.addEventListener('click', () => {
-  if (gameRunning) return;
-  gameRunning = true;
-  score = 0;
-  timeLeft = 30;
-  scoreEl.textContent = `Счёт: 0`;
-  timerEl.textContent = `Время: 30`;
-  resultEl.classList.add('hidden');
-  startBtn.disabled = true;
-  startBtn.textContent = "Лови!";
+// Галерея — лайтбокс
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const closeBtn = document.querySelector('.close');
 
-  hearts = [];
-  for (let i = 0; i < 8; i++) hearts.push(createHeartGame());
+if (lightbox) {
+  document.querySelectorAll('.photo-item img').forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src;
+      lightbox.style.display = 'flex';
+    });
+  });
 
-  updateGame();
-  startTimer();
-});
+  closeBtn.addEventListener('click', () => {
+    lightbox.style.display = 'none';
+  });
 
-// Отслеживание мыши (или тач для мобилы)
-gameCanvas.addEventListener('mousemove', e => {
-  const rect = gameCanvas.getBoundingClientRect();
-  mouse.x = e.clientX - rect.left;
-  mouse.y = e.clientY - rect.top;
-});
+  lightbox.addEventListener('click', e => {
+    if (e.target === lightbox) lightbox.style.display = 'none';
+  });
+}
 
-gameCanvas.addEventListener('touchmove', e => {
-  e.preventDefault();
-  const rect = gameCanvas.getBoundingClientRect();
-  mouse.x = e.touches[0].clientX - rect.left;
-  mouse.y = e.touches[0].clientY - rect.top;
-});
+// Конверт на странице приглашения
+const envelope = document.getElementById('envelope');
+if (envelope) {
+  envelope.addEventListener('click', () => {
+    envelope.style.transform = 'rotateX(180deg)';
+    setTimeout(() => {
+      document.getElementById('invitationContent').classList.remove('hidden');
+      envelope.style.display = 'none';
+    }, 800);
+  });
+}
+
+const acceptInv = document.getElementById('acceptInvitation');
+if (acceptInv) {
+  acceptInv.addEventListener('click', () => {
+    confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+    setTimeout(() => {
+      alert('Урааа! Готовлюсь к самому лучшему вечеру в нашей жизни 💖');
+    }, 1200);
+  });
+}
