@@ -12,20 +12,26 @@
 </head>
 <body>
 
+<div class="parallax-bg"></div>
 <canvas id="hearts"></canvas>
+
+<div class="love-meter fade-in">
+  <div class="progress" id="loveProgress"></div>
+  <span>Наш уровень любви: <span id="lovePercent">0</span>% ❤️</span>
+</div>
 
 <div class="container" id="mainPage">
   <header class="fade-in">
     <h1>Привет, моя Настюша ❤️</h1>
-    <p class="subtitle">3 года вместе… и это только начало</p>
+    <p class="subtitle">3 года вместе… и это только начало нашей сказки</p>
   </header>
 
   <div class="hero-photo fade-in">
-    <img src="assets/our-photo-main.jpg" alt="Мы вместе">
+    <img src="assets/our-photo-main.jpg" alt="Мы вместе" loading="lazy">
   </div>
 
   <div class="countdown fade-in">
-    <h3>До нашего особенного дня осталось:</h3>
+    <h3>До нашего волшебного дня осталось:</h3>
     <div id="timer">Загрузка...</div>
   </div>
 
@@ -37,23 +43,27 @@
       <button id="noBtn">Нет...</button>
     </div>
 
-    <div id="message" class="message"></div>
+    <div id="message" class="message hidden">
+      <p id="typingText"></p>
+    </div>
   </section>
 
   <section class="game-section fade-in">
-    <h2>Мини-игра: Лови мои сердечки!</h2>
-    <p>Собери как можно больше за 35 секунд. Чем больше — тем круче сюрприз 💕</p>
+    <h2>Мини-игра: Лови мои сердечки для тебя!</h2>
+    <p>Собери как можно больше — каждый сердечко +1% к нашей любви 💕</p>
     <div class="game-container">
       <canvas id="gameCanvas" width="640" height="420"></canvas>
       <div id="gameScore">0</div>
       <div id="gameTimer">35</div>
       <button id="startGameBtn">Начать ловить! ❤️</button>
     </div>
-    <p id="gameResult" class="hidden">Ты поймала <span id="finalScore">0</span> сердечек! 🏆</p>
+    <p id="gameResult" class="hidden">Ты поймала <span id="finalScore">0</span> сердечек! +<span id="bonusLove">0</span>% любви! 🏆</p>
   </section>
 
   <div class="nav-buttons fade-in">
-    <a href="gallery.html" class="nav-btn">Посмотреть наши фото →</a>
+    <a href="gallery.html" class="nav-btn">Наши фото →</a>
+    <a href="memory.html" class="nav-btn">Игра: Найди пару ❤️</a>
+    <a href="invitation.html" class="nav-btn">Приглашение на свидание →</a>
   </div>
 
   <audio id="loveSong" loop>
@@ -61,7 +71,7 @@
   </audio>
   <audio id="catchSound" src="https://assets.codepen.io/605876/coin.mp3"></audio>
 
-  <footer>С любовью, твой Глеб • февраль 2026 💌</footer>
+  <footer>С безумной любовью, твой Глеб 💌 • 07.02.2026</footer>
 </div>
 
 <script src="script.js"></script>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Найди пару — наши воспоминания ❤️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Dancing+Script:wght@600;700&family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="parallax-bg"></div>
+<canvas id="hearts"></canvas>
+
+<div class="love-meter fade-in">
+  <div class="progress" id="loveProgress"></div>
+  <span>Наш уровень любви: <span id="lovePercent">0</span>% ❤️</span>
+</div>
+
+<div class="container memory-container">
+  <h1 class="fade-in">Игра: Найди пару наших воспоминаний 💞</h1>
+  <p class="fade-in">Переворачивай карточки — найди все пары фото. За каждую пару +5% любви!</p>
+
+  <div class="memory-grid" id="memoryGrid"></div>
+
+  <p id="memoryResult" class="hidden">Ура! Ты нашла все пары! +30% любви! 🏆</p>
+
+  <div class="nav-buttons fade-in">
+    <a href="index.html" class="nav-btn">← Главная</a>
+    <a href="gallery.html" class="nav-btn">Галерея →</a>
+    <a href="invitation.html" class="nav-btn">Приглашение →</a>
+  </div>
+
+  <footer>С любовью от Глеба ❤️</footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

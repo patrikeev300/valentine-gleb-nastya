@@ -1,4 +1,4 @@
-// Общие сердечки на фоне
+// Neon hearts + parallax
 const canvas = document.getElementById('hearts');
 if (canvas) {
   const ctx = canvas.getContext('2d');
@@ -6,27 +6,26 @@ if (canvas) {
   canvas.height = window.innerHeight;
 
   let particles = [];
-
-  function createParticle() {
-    return {
+  for (let i = 0; i < 70; i++) {
+    particles.push({
       x: Math.random() * canvas.width,
-      y: -60,
-      size: Math.random() * 22 + 14,
-      speed: Math.random() * 1.6 + 0.9,
+      y: Math.random() * -canvas.height,
+      size: Math.random() * 25 + 15,
+      speed: Math.random() * 2 + 1,
       rot: Math.random() * 360,
-      rotSp: Math.random() * 3 - 1.5,
-      opacity: Math.random() * 0.5 + 0.55
-    };
+      rotSp: Math.random() * 4 - 2,
+      opacity: Math.random() * 0.5 + 0.5
+    });
   }
-
-  for (let i = 0; i < 55; i++) particles.push(createParticle());
 
   function drawHeart(p) {
     ctx.save();
     ctx.globalAlpha = p.opacity;
     ctx.translate(p.x, p.y);
     ctx.rotate(p.rot * Math.PI / 180);
-    ctx.fillStyle = `hsl(${330 + Math.random()*30}, 95%, 65%)`;
+    ctx.fillStyle = `hsl(${330 + Math.random()*40}, 100%, 60%)`;
+    ctx.shadowBlur = 30;
+    ctx.shadowColor = '#ff4081';
     ctx.beginPath();
     ctx.moveTo(0, -p.size/2);
     ctx.bezierCurveTo(p.size/2, -p.size, p.size, -p.size/3, 0, p.size/2);
@@ -35,20 +34,20 @@ if (canvas) {
     ctx.restore();
   }
 
-  function animateHearts() {
+  function animate() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
     particles.forEach(p => {
       p.y += p.speed;
       p.rot += p.rotSp;
-      if (p.y > canvas.height + 60) {
-        p.y = -60;
+      if (p.y > canvas.height + 100) {
+        p.y = -100;
         p.x = Math.random() * canvas.width;
       }
       drawHeart(p);
     });
-    requestAnimationFrame(animateHearts);
+    requestAnimationFrame(animate);
   }
-  animateHearts();
+  animate();
 
   window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
@@ -56,207 +55,238 @@ if (canvas) {
   });
 }
 
-// Fade-in при появлении
+// Love Meter с localStorage
+let loveLevel = parseInt(localStorage.getItem('loveLevel')) || 0;
+function updateLove(points) {
+  loveLevel = Math.min(100, loveLevel + points);
+  const progress = document.getElementById('loveProgress');
+  const percent = document.getElementById('lovePercent');
+  if (progress && percent) {
+    progress.style.width = loveLevel + '%';
+    percent.textContent = loveLevel;
+  }
+  localStorage.setItem('loveLevel', loveLevel);
+  if (loveLevel >= 100) {
+    confetti({ particleCount: 300, spread: 120 });
+    alert('100% любви! Ты — моя идеальная половинка, Настя! 💖');
+  }
+}
+updateLove(0);
+
+// Fade-in
 document.querySelectorAll('.fade-in').forEach(el => {
-  setTimeout(() => el.classList.add('visible'), 300);
+  setTimeout(() => el.classList.add('visible'), 400);
 });
 
-// Таймер обратного отсчёта до 14 февраля 2026
+// Countdown до 14 февраля 2026
 const countdownEl = document.getElementById('timer');
 if (countdownEl) {
-  const targetDate = new Date('2026-02-14T19:00:00').getTime();
-
-  function updateTimer() {
-    const now = new Date().getTime();
-    const distance = targetDate - now;
-
-    if (distance < 0) {
-      countdownEl.innerHTML = "УРА! Сегодня наш день! 🎉";
+  const target = new Date('2026-02-14T19:00:00').getTime();
+  function tick() {
+    const dist = target - Date.now();
+    if (dist < 0) {
+      countdownEl.textContent = "Сегодня наш день! 🎉";
       return;
     }
-
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    countdownEl.innerHTML = `${days} дн ${hours} ч ${minutes} мин ${seconds} сек`;
+    const d = Math.floor(dist / 86400000);
+    const h = Math.floor((dist % 86400000) / 3600000);
+    const m = Math.floor((dist % 3600000) / 60000);
+    const s = Math.floor((dist % 60000) / 1000);
+    countdownEl.textContent = `${d}д ${h}ч ${m}м ${s}с`;
   }
-
-  setInterval(updateTimer, 1000);
-  updateTimer();
+  setInterval(tick, 1000);
+  tick();
 }
 
 // Убегающая кнопка "Нет"
 const noBtn = document.getElementById('noBtn');
 if (noBtn) {
-  const funny = [
-    "Ой, Настюш... ну пожалуйста 🥺",
-    "Кнопка стесняется, но сердце говорит ДА!",
-    "Я же твой Глебик... как можно отказать? 😭",
-    "Она убегает, потому что знает — ДА лучше 💨",
-    "Последний шанс сказать ДААА 😏"
-  ];
-  let idx = 0;
-
+  const msgs = ["Настюш, ну пожалуйста 🥺","Сердце говорит ДА!","Последний шанс 😏","Она убегает, потому что ДА лучше 💨"];
+  let i = 0;
   noBtn.addEventListener('mouseover', e => {
-    const btn = e.target;
-    const maxX = window.innerWidth - btn.offsetWidth - 80;
-    const maxY = window.innerHeight - btn.offsetHeight - 80;
-
-    btn.style.position = 'absolute';
-    btn.style.left = Math.random() * maxX + 'px';
-    btn.style.top = Math.random() * maxY + 'px';
-
-    btn.textContent = funny[idx % funny.length];
-    idx++;
+    const b = e.target;
+    b.style.position = 'absolute';
+    b.style.left = Math.random() * (window.innerWidth - 200) + 'px';
+    b.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+    b.textContent = msgs[i % msgs.length];
+    i++;
   });
 }
 
-// Кнопка "Да" → сообщение + переход на приглашение
+// "Да" → typing признание + love + конфетти
 const yesBtn = document.getElementById('yesBtn');
 if (yesBtn) {
   yesBtn.addEventListener('click', () => {
+    updateLove(30);
     const msg = document.getElementById('message');
-    msg.innerHTML = `УРАААА! 💖💖💖<br>Ты сделала меня самым счастливым!<br>Переходи скорее → <a href="invitation.html" style="color:#ff4081; font-weight:bold;">Открыть приглашение</a>`;
-    msg.style.opacity = 1;
+    const typing = document.getElementById('typingText');
+    msg.classList.remove('hidden');
+    typing.textContent = '';
+    const text = "Настенька... Помнишь, как мы в техникуме первый раз кофе вместе пили? С тех пор каждый день с тобой — лучше предыдущего. Ты мой огонь, моя поддержка, мой самый любимый человек на свете. Люблю тебя безумно сильно и навсегда! 💖";
+    let char = 0;
+    const typeInt = setInterval(() => {
+      if (char < text.length) {
+        typing.textContent += text[char++];
+      } else {
+        clearInterval(typeInt);
+      }
+    }, 50);
 
-    // Конфетти
-    const end = Date.now() + 5000;
-    (function frame() {
-      confetti({ particleCount: 9, angle: 60, spread: 70, origin: { x: 0 } });
-      confetti({ particleCount: 9, angle: 120, spread: 70, origin: { x: 1 } });
-      if (Date.now() < end) requestAnimationFrame(frame);
-    })();
-
+    confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
     document.querySelector('.buttons').style.display = 'none';
   });
 }
 
-// Мини-игра
-const gameCanvas = document.getElementById('gameCanvas');
-if (gameCanvas) {
-  const ctx = gameCanvas.getContext('2d');
-  const startBtn = document.getElementById('startGameBtn');
-  const scoreEl = document.getElementById('gameScore');
-  const timerEl = document.getElementById('gameTimer');
-  const resultEl = document.getElementById('gameResult');
-  const finalScore = document.getElementById('finalScore');
-  const catchSound = document.getElementById('catchSound');
+// Мини-игра "Лови сердечки"
+const gc = document.getElementById('gameCanvas');
+if (gc) {
+  const gctx = gc.getContext('2d');
+  const startG = document.getElementById('startGameBtn');
+  const gScore = document.getElementById('gameScore');
+  const gTimer = document.getElementById('gameTimer');
+  const gResult = document.getElementById('gameResult');
+  const finalG = document.getElementById('finalScore');
+  const bonus = document.getElementById('bonusLove');
+  const catchS = document.getElementById('catchSound');
 
-  let running = false;
-  let score = 0;
-  let time = 35;
-  let hearts = [];
-  let mouse = { x: 0, y: 0 };
+  let gRun = false, gScoreVal = 0, gTime = 35, gHearts = [], mouse = {x:0,y:0};
 
-  function spawnHeart() {
-    return {
-      x: Math.random() * (gameCanvas.width - 50) + 25,
-      y: -60,
-      size: Math.random() * 35 + 28,
-      speed: Math.random() * 2.2 + 1.8 + (score > 20 ? 0.6 : 0)
-    };
+  function newHeart() {
+    return {x: Math.random()*(gc.width-60)+30, y:-80, size: Math.random()*40+30, speed: Math.random()*2.5+2 + (gScoreVal > 20 ? 1 : 0)};
   }
 
-  function drawHeart(h) {
-    ctx.save();
-    ctx.translate(h.x, h.y);
-    ctx.fillStyle = '#ff1493';
-    ctx.beginPath();
-    ctx.moveTo(0, -h.size/2);
-    ctx.bezierCurveTo(h.size/2, -h.size, h.size, -h.size/3, 0, h.size/2);
-    ctx.bezierCurveTo(-h.size, -h.size/3, -h.size/2, -h.size, 0, -h.size/2);
-    ctx.fill();
-    ctx.restore();
+  function drawGHeart(h) {
+    gctx.save();
+    gctx.translate(h.x, h.y);
+    gctx.fillStyle = '#ff1493';
+    gctx.shadowBlur = 20;
+    gctx.shadowColor = '#ff4081';
+    gctx.beginPath();
+    gctx.moveTo(0, -h.size/2);
+    gctx.bezierCurveTo(h.size/2, -h.size, h.size, -h.size/3, 0, h.size/2);
+    gctx.bezierCurveTo(-h.size, -h.size/3, -h.size/2, -h.size, 0, -h.size/2);
+    gctx.fill();
+    gctx.restore();
   }
 
-  function gameLoop() {
-    if (!running) return;
-
-    ctx.clearRect(0,0,gameCanvas.width,gameCanvas.height);
-
-    hearts.forEach((h,i) => {
+  function gLoop() {
+    if (!gRun) return;
+    gctx.clearRect(0,0,gc.width,gc.height);
+    gHearts.forEach((h,i) => {
       h.y += h.speed;
-
-      const dx = h.x - mouse.x;
-      const dy = h.y - mouse.y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-
-      if (dist < h.size * 0.9) {
-        score++;
-        scoreEl.textContent = score;
-        hearts.splice(i,1);
-        hearts.push(spawnHeart());
-        catchSound.currentTime = 0;
-        catchSound.play().catch(()=>{});
+      const d = Math.hypot(h.x - mouse.x, h.y - mouse.y);
+      if (d < h.size * 0.9) {
+        gScoreVal++;
+        gScore.textContent = gScoreVal;
+        gHearts.splice(i,1);
+        gHearts.push(newHeart());
+        catchS.currentTime = 0; catchS.play().catch(()=>{});
       }
-
-      if (h.y > gameCanvas.height + 60) {
-        hearts.splice(i,1);
-        hearts.push(spawnHeart());
+      if (h.y > gc.height + 100) {
+        gHearts.splice(i,1);
+        gHearts.push(newHeart());
       }
-
-      drawHeart(h);
+      drawGHeart(h);
     });
-
-    requestAnimationFrame(gameLoop);
+    requestAnimationFrame(gLoop);
   }
 
-  let timerId;
-  startBtn.addEventListener('click', () => {
-    if (running) return;
-    running = true;
-    score = 0;
-    time = 35;
-    scoreEl.textContent = 0;
-    timerEl.textContent = 35;
-    resultEl.classList.add('hidden');
-    startBtn.disabled = true;
-    startBtn.textContent = "Лови!";
+  let gTimerId;
+  startG.addEventListener('click', () => {
+    if (gRun) return;
+    gRun = true;
+    gScoreVal = 0; gTime = 35;
+    gScore.textContent = 0;
+    gTimer.textContent = 35;
+    gResult.classList.add('hidden');
+    startG.disabled = true;
+    startG.textContent = "Лови быстрее!";
 
-    hearts = [];
-    for (let i = 0; i < 10; i++) hearts.push(spawnHeart());
+    gHearts = Array(12).fill().map(newHeart);
+    gLoop();
 
-    gameLoop();
-
-    timerId = setInterval(() => {
-      time--;
-      timerEl.textContent = time;
-      if (time <= 0) {
-        clearInterval(timerId);
-        running = false;
-        finalScore.textContent = score;
-        resultEl.classList.remove('hidden');
-        startBtn.disabled = false;
-        startBtn.textContent = "Ещё раз?";
+    gTimerId = setInterval(() => {
+      gTime--;
+      gTimer.textContent = gTime;
+      if (gTime <= 0) {
+        clearInterval(gTimerId);
+        gRun = false;
+        finalG.textContent = gScoreVal;
+        const bonusVal = Math.min(40, gScoreVal * 2);
+        bonus.textContent = bonusVal;
+        updateLove(bonusVal);
+        gResult.classList.remove('hidden');
+        startG.disabled = false;
+        startG.textContent = "Ещё разок?";
       }
     }, 1000);
   });
 
-  gameCanvas.addEventListener('mousemove', e => {
-    const r = gameCanvas.getBoundingClientRect();
+  gc.addEventListener('mousemove', e => {
+    const r = gc.getBoundingClientRect();
     mouse.x = e.clientX - r.left;
     mouse.y = e.clientY - r.top;
   });
-
-  gameCanvas.addEventListener('touchmove', e => {
+  gc.addEventListener('touchmove', e => {
     e.preventDefault();
-    const r = gameCanvas.getBoundingClientRect();
+    const r = gc.getBoundingClientRect();
     mouse.x = e.touches[0].clientX - r.left;
     mouse.y = e.touches[0].clientY - r.top;
   });
 }
 
-// Музыка
-const music = document.getElementById('loveSong');
-if (music) {
-  document.addEventListener('click', () => {
-    if (music.paused) music.play().catch(()=>{});
-  }, { once: true });
+// Memory game
+const memoryGrid = document.getElementById('memoryGrid');
+if (memoryGrid) {
+  const photos = [
+    'assets/photo-1.jpg', 'assets/photo-1.jpg',
+    'assets/photo-2.jpg', 'assets/photo-2.jpg',
+    'assets/photo-3.jpg', 'assets/photo-3.jpg',
+    'assets/photo-4.jpg', 'assets/photo-4.jpg',
+    'assets/photo-5.jpg', 'assets/photo-5.jpg',
+    'assets/photo-6.jpg', 'assets/photo-6.jpg'
+  ];
+
+  photos.sort(() => Math.random() - 0.5);
+
+  let flipped = [];
+  let matched = 0;
+
+  photos.forEach(src => {
+    const card = document.createElement('div');
+    card.classList.add('memory-card');
+    card.innerHTML = `
+      <div class="front">❤️</div>
+      <div class="back"><img src="${src}" loading="lazy"></div>
+    `;
+    card.addEventListener('click', () => {
+      if (flipped.length < 2 && !card.classList.contains('flipped')) {
+        card.classList.add('flipped');
+        flipped.push(card);
+
+        if (flipped.length === 2) {
+          setTimeout(() => {
+            if (flipped[0].querySelector('img').src === flipped[1].querySelector('img').src) {
+              matched += 2;
+              updateLove(5);
+              confetti({ particleCount: 50, origin: { x: 0.5, y: 0.7 } });
+              if (matched === photos.length) {
+                document.getElementById('memoryResult').classList.remove('hidden');
+                updateLove(30);
+              }
+            } else {
+              flipped.forEach(c => c.classList.remove('flipped'));
+            }
+            flipped = [];
+          }, 1000);
+        }
+      }
+    });
+    memoryGrid.appendChild(card);
+  });
 }
 
-// Галерея — лайтбокс
+// Лайтбокс для галереи
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 const closeBtn = document.querySelector('.close');
@@ -269,16 +299,13 @@ if (lightbox) {
     });
   });
 
-  closeBtn.addEventListener('click', () => {
-    lightbox.style.display = 'none';
-  });
-
+  if (closeBtn) closeBtn.addEventListener('click', () => lightbox.style.display = 'none');
   lightbox.addEventListener('click', e => {
     if (e.target === lightbox) lightbox.style.display = 'none';
   });
 }
 
-// Конверт на странице приглашения
+// Конверт на invitation
 const envelope = document.getElementById('envelope');
 if (envelope) {
   envelope.addEventListener('click', () => {
@@ -294,8 +321,12 @@ const acceptInv = document.getElementById('acceptInvitation');
 if (acceptInv) {
   acceptInv.addEventListener('click', () => {
     confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
-    setTimeout(() => {
-      alert('Урааа! Готовлюсь к самому лучшему вечеру в нашей жизни 💖');
-    }, 1200);
+    setTimeout(() => alert('Урааа! Готовлюсь к самому лучшему вечеру в нашей жизни 💖'), 1200);
   });
+}
+
+// Музыка (автозапуск после первого клика)
+const audio = document.getElementById('loveSong');
+if (audio) {
+  document.addEventListener('click', () => audio.play().catch(() => {}), {once: true});
 }
