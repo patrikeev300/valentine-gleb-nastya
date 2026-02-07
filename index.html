@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Настя, ты моё всё 💖 — Глеб</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Dancing+Script:wght@600;700&family=Pacifico&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<canvas id="hearts"></canvas>
+
+<div class="container">
+  <header class="fade-in">
+    <h1>Привет, моя Настюша ❤️</h1>
+    <p class="subtitle">07.02.2026 → навсегда с тобой</p>
+  </header>
+
+  <section class="photo-section fade-in">
+    <div class="photo-frame">
+      <img src="our-photo.jpg" alt="Мы с тобой" id="couplePhoto">
+    </div>
+  </section>
+
+  <section class="story fade-in">
+    <h2>Наша история</h2>
+    <p>Нам обоим по <strong>21 году</strong>, и уже <strong>3 года</strong> мы вместе — лучшее, что могло случиться.</p>
+    <p>Познакомились в техникуме, оба загорелись идеей стать топ-селлерами на Wildberries 😎</p>
+    <p>Ты — мой огонь, моя поддержка, мой самый большой смех и самый нежный взгляд.</p>
+    <p>Каждый день с тобой — как маленький праздник 💕</p>
+  </section>
+
+  <section class="question-section fade-in">
+    <p class="question">Настенька, будешь моей Валентинкой... навсегда?</p>
+
+    <div class="buttons">
+      <button id="yesBtn">ДА! Конечно, любимый! 💍😍</button>
+      <button id="noBtn">Нет...</button>
+    </div>
+
+    <div id="message" class="message"></div>
+  </section>
+
+  <section class="music-section fade-in">
+    <button id="playBtn" class="audio-btn">Включи нашу песню ♡</button>
+    <audio id="loveSong" loop>
+      <source src="love-song.mp3" type="audio/mpeg">
+      Твой браузер не поддерживает аудио.
+    </audio>
+  </section>
+
+  <footer>
+    С безумной любовью твой Глеб 💌 14 февраля 2026
+  </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

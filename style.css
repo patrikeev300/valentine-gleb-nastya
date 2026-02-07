@@ -1,0 +1,201 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fff0f5 100%);
+  font-family: 'Comic Neue', cursive;
+  color: #333;
+  overflow-x: hidden;
+  position: relative;
+}
+
+canvas#hearts {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.container {
+  position: relative;
+  z-index: 10;
+  max-width: 920px;
+  margin: 40px auto;
+  padding: 30px 20px;
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 32px;
+  box-shadow: 0 20px 50px rgba(233, 30, 99, 0.35);
+  backdrop-filter: blur(12px);
+  text-align: center;
+}
+
+header h1 {
+  font-family: 'Pacifico', cursive;
+  font-size: 4.8rem;
+  color: #c2185b;
+  text-shadow: 4px 4px 12px #ff80ab;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  color: #e91e63;
+  opacity: 0.9;
+}
+
+.photo-section {
+  margin: 45px 0;
+}
+
+.photo-frame {
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+  border: 14px solid white;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+  transition: transform 0.6s;
+}
+
+.photo-frame:hover {
+  transform: scale(1.06);
+}
+
+.photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.story {
+  margin: 50px 0;
+  font-size: 1.45rem;
+  line-height: 1.7;
+  color: #444;
+}
+
+.story h2 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 3.2rem;
+  color: #d81b60;
+  margin-bottom: 25px;
+}
+
+.story strong {
+  color: #e91e63;
+  font-weight: bold;
+}
+
+.question {
+  font-family: 'Dancing Script', cursive;
+  font-size: 4.2rem;
+  color: #ad1457;
+  margin: 60px 0 50px;
+  line-height: 1.2;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  flex-wrap: wrap;
+  margin: 50px 0;
+}
+
+button {
+  font-size: 2.1rem;
+  padding: 18px 65px;
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.35s ease;
+}
+
+#yesBtn {
+  background: linear-gradient(45deg, #ff4081, #f50057);
+  color: white;
+  box-shadow: 0 10px 25px #ff4081aa;
+}
+
+#yesBtn:hover {
+  transform: scale(1.14);
+  box-shadow: 0 15px 35px #f50057aa;
+}
+
+#noBtn {
+  background: #616161;
+  color: white;
+  position: relative;
+}
+
+#noBtn:hover {
+  background: #9e9e9e;
+}
+
+.message {
+  font-family: 'Dancing Script', cursive;
+  font-size: 3.4rem;
+  color: #d500f9;
+  margin: 70px 0;
+  min-height: 140px;
+  opacity: 0;
+  transition: opacity 1.8s, transform 1s;
+  transform: translateY(30px);
+}
+
+.message.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.audio-btn {
+  margin: 40px auto;
+  padding: 14px 40px;
+  font-size: 1.5rem;
+  background: #e91e63;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px #e91e63aa;
+  transition: all 0.3s;
+}
+
+.audio-btn:hover {
+  transform: scale(1.08);
+  background: #c2185b;
+}
+
+footer {
+  margin-top: 80px;
+  font-size: 1.3rem;
+  color: #555;
+  opacity: 0.85;
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 1.2s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Мобильная адаптация */
+@media (max-width: 600px) {
+  header h1 { font-size: 3.6rem; }
+  .question { font-size: 3.4rem; }
+  .buttons { gap: 40px; flex-direction: column; }
+  button { padding: 16px 50px; font-size: 1.9rem; }
+  .photo-frame { width: 240px; height: 240px; }
+}
