@@ -266,6 +266,10 @@ if (gameCanvas) {
 // Memory Game
 // ────────────────────────────────────────
 
+// ────────────────────────────────────────
+// Memory Game — исправленная версия (можно продолжать после любого совпадения)
+// ────────────────────────────────────────
+
 const memoryGrid = document.getElementById('memoryGrid');
 if (memoryGrid) {
   const photos = [
@@ -277,7 +281,6 @@ if (memoryGrid) {
     'assets/photo-6.jpg', 'assets/photo-6.jpg'
   ];
 
-  let cards = [];
   let flippedCards = [];
   let matchedPairs = 0;
   const totalPairs = photos.length / 2;
@@ -288,7 +291,6 @@ if (memoryGrid) {
 
   function createMemoryBoard() {
     memoryGrid.innerHTML = '';
-    cards = [];
     flippedCards = [];
     matchedPairs = 0;
     const pairsFound = document.getElementById('pairsFound');
@@ -307,16 +309,20 @@ if (memoryGrid) {
       `;
       card.addEventListener('click', () => flipCard(card));
       memoryGrid.appendChild(card);
-      cards.push(card);
     });
   }
 
   function flipCard(card) {
-    if (flippedCards.length < 2 && !card.classList.contains('flipped') && !card.classList.contains('matched')) {
-      card.classList.add('flipped');
-      flippedCards.push(card);
+    // Блокируем клик, если уже 2 открыты или карточка уже открыта/совпала
+    if (flippedCards.length >= 2 || card.classList.contains('flipped') || card.classList.contains('matched')) {
+      return;
+    }
 
-      if (flippedCards.length === 2) checkForMatch();
+    card.classList.add('flipped');
+    flippedCards.push(card);
+
+    if (flippedCards.length === 2) {
+      checkForMatch();
     }
   }
 
@@ -329,6 +335,7 @@ if (memoryGrid) {
       if (pairsFound) pairsFound.textContent = matchedPairs;
       updateLove(5);
 
+      // Делаем карточки "замороженными"
       card1.classList.add('matched');
       card2.classList.add('matched');
 
@@ -349,6 +356,7 @@ if (memoryGrid) {
         }, 800);
       }
     } else {
+      // Если не совпали — закрываем через 1.2 секунды
       setTimeout(() => {
         card1.classList.remove('flipped');
         card2.classList.remove('flipped');
@@ -357,8 +365,10 @@ if (memoryGrid) {
     }
   }
 
+  // Перезапуск игры
   document.getElementById('restartMemory')?.addEventListener('click', createMemoryBoard);
 
+  // Старт игры при загрузке страницы
   createMemoryBoard();
 }
 
