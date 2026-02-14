@@ -8,35 +8,35 @@
 
 let loveLevel = parseInt(localStorage.getItem('loveLevel')) || 0;
 
+// Функция обновления — теперь с защитой от повторных вызовов без изменений
 function updateLove(points = 0) {
+  const oldLevel = loveLevel;
   loveLevel = Math.min(100, loveLevel + points);
-  localStorage.setItem('loveLevel', loveLevel);
 
-  // Пытаемся обновить визуально
+  // Сохраняем только если изменилось
+  if (loveLevel !== oldLevel) {
+    localStorage.setItem('loveLevel', loveLevel);
+  }
+
+  // Обновляем визуально, если элементы есть
   const progress = document.getElementById('loveProgress');
   const percent = document.getElementById('lovePercent');
-
   if (progress && percent) {
     progress.style.width = loveLevel + '%';
     percent.textContent = loveLevel;
   }
 
-  // Финал при 100%
-  if (loveLevel >= 100) {
+  // Финал только один раз
+  if (loveLevel >= 100 && oldLevel < 100) {
     confetti({ particleCount: 250, spread: 100, origin: { y: 0.6 } });
     alert('100% — ты моя навсегда, Настя ❤️');
   }
 }
 
-// Запускаем обновление сразу после загрузки DOM (самое надёжное)
-document.addEventListener('DOMContentLoaded', () => {
-  updateLove(0); // применяем сохранённое значение
-});
-
-// Дополнительно — обновляем при каждом взаимодействии (если страница динамическая)
+// Один-единственный вызов при полной загрузке страницы
 window.addEventListener('load', () => {
-  updateLove(0);
-});
+  updateLove(0); // применяем текущее сохранённое значение
+}, { once: true })
 
 // Fade-in анимация
 document.querySelectorAll('.fade-in').forEach((el, i) => {
