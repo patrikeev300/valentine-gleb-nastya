@@ -2,23 +2,41 @@
 // Общие переменные и функции
 // ────────────────────────────────────────
 
+// ────────────────────────────────────────
+// Love Meter — с надёжной инициализацией
+// ────────────────────────────────────────
+
 let loveLevel = parseInt(localStorage.getItem('loveLevel')) || 0;
 
-function updateLove(points) {
+function updateLove(points = 0) {
   loveLevel = Math.min(100, loveLevel + points);
+  localStorage.setItem('loveLevel', loveLevel);
+
+  // Пытаемся обновить визуально
   const progress = document.getElementById('loveProgress');
   const percent = document.getElementById('lovePercent');
+
   if (progress && percent) {
     progress.style.width = loveLevel + '%';
     percent.textContent = loveLevel;
   }
-  localStorage.setItem('loveLevel', loveLevel);
 
+  // Финал при 100%
   if (loveLevel >= 100) {
     confetti({ particleCount: 250, spread: 100, origin: { y: 0.6 } });
     alert('100% — ты моя навсегда, Настя ❤️');
   }
 }
+
+// Запускаем обновление сразу после загрузки DOM (самое надёжное)
+document.addEventListener('DOMContentLoaded', () => {
+  updateLove(0); // применяем сохранённое значение
+});
+
+// Дополнительно — обновляем при каждом взаимодействии (если страница динамическая)
+window.addEventListener('load', () => {
+  updateLove(0);
+});
 
 // Fade-in анимация
 document.querySelectorAll('.fade-in').forEach((el, i) => {
