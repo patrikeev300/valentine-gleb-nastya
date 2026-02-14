@@ -270,6 +270,10 @@ if (gameCanvas) {
 // Memory Game — исправленная версия (можно продолжать после любого совпадения)
 // ────────────────────────────────────────
 
+// ────────────────────────────────────────
+// Memory Game — исправленная версия (можно продолжать после любого совпадения)
+// ────────────────────────────────────────
+
 const memoryGrid = document.getElementById('memoryGrid');
 if (memoryGrid) {
   const photos = [
@@ -313,16 +317,21 @@ if (memoryGrid) {
   }
 
   function flipCard(card) {
-    // Блокируем клик, если уже 2 открыты или карточка уже открыта/совпала
+    // Запрещаем клик, если:
+    // - уже 2 карточки открыты (ждём проверки)
+    // - карточка уже открыта
+    // - карточка уже совпала
     if (flippedCards.length >= 2 || card.classList.contains('flipped') || card.classList.contains('matched')) {
       return;
     }
 
+    // Переворачиваем карточку
     card.classList.add('flipped');
     flippedCards.push(card);
 
+    // Если открыто ровно 2 — проверяем совпадение
     if (flippedCards.length === 2) {
-      checkForMatch();
+      setTimeout(checkForMatch, 600); // небольшая задержка для анимации
     }
   }
 
@@ -330,21 +339,21 @@ if (memoryGrid) {
     const [card1, card2] = flippedCards;
 
     if (card1.dataset.value === card2.dataset.value) {
+      // Совпадение
       matchedPairs++;
       const pairsFound = document.getElementById('pairsFound');
       if (pairsFound) pairsFound.textContent = matchedPairs;
       updateLove(5);
 
-      // Делаем карточки "замороженными"
       card1.classList.add('matched');
       card2.classList.add('matched');
 
+      // Звук и конфетти
       const matchSound = document.getElementById('matchSound');
       if (matchSound) {
         matchSound.currentTime = 0;
         matchSound.play().catch(() => {});
       }
-
       confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
 
       flippedCards = [];
@@ -356,7 +365,7 @@ if (memoryGrid) {
         }, 800);
       }
     } else {
-      // Если не совпали — закрываем через 1.2 секунды
+      // Не совпали — закрываем через 1.2 секунды
       setTimeout(() => {
         card1.classList.remove('flipped');
         card2.classList.remove('flipped');
@@ -368,7 +377,7 @@ if (memoryGrid) {
   // Перезапуск игры
   document.getElementById('restartMemory')?.addEventListener('click', createMemoryBoard);
 
-  // Старт игры при загрузке страницы
+  // Запуск при загрузке страницы
   createMemoryBoard();
 }
 
