@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Наши моменты — Настя & Глеб 💞</title>
+  <title>Наши моменты — Настя & Глеб</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Dancing+Script:wght@600;700&family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Dancing+Script:wght@600;700&family=Pacifico&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,31 +16,39 @@
 
 <div class="love-meter fade-in">
   <div class="progress" id="loveProgress"></div>
-  <span>Наш уровень любви: <span id="lovePercent"><br>0<br></span>% ❤️</span>
+  <span>Наш уровень: <span id="lovePercent">0</span>%</span>
 </div>
 
 <div class="container gallery-container">
-  <h1 class="fade-in">Наши лучшие моменты 💞</h1>
+  <h1 class="fade-in">Наши лучшие моменты</h1>
 
   <div class="photo-grid fade-in">
-    <div class="photo-item"><img src="assets/photo-1.jpg" alt="1" loading="lazy"></div>
-    <div class="photo-item"><img src="assets/photo-2.jpg" alt="2" loading="lazy"></div>
-    <div class="photo-item"><img src="assets/photo-3.jpg" alt="3" loading="lazy"></div>
-    <div class="photo-item"><img src="assets/photo-4.jpg" alt="4" loading="lazy"></div>
+    <div class="photo-item">
+      <img src="assets/photo-1.jpg" alt="Момент 1" loading="lazy">
+    </div>
+    <div class="photo-item">
+      <img src="assets/photo-2.jpg" alt="Момент 2" loading="lazy">
+    </div>
+    <div class="photo-item">
+      <img src="assets/photo-3.jpg" alt="Момент 3" loading="lazy">
+    </div>
+    <div class="photo-item">
+      <img src="assets/photo-4.jpg" alt="Момент 4" loading="lazy">
+    </div>
+    <!-- Добавляй новые <div class="photo-item"><img src="assets/photo-5.jpg" ...></div> по желанию -->
   </div>
 
   <div class="lightbox" id="lightbox">
-    <span class="close">×</span>
-    <img class="lightbox-content" id="lightboxImg">
+    <span class="close">&times;</span>
+    <img class="lightbox-content" id="lightboxImg" alt="Увеличенное фото">
   </div>
 
   <div class="nav-buttons fade-in">
-    <a href="index.html" class="nav-btn">← Главная</a>
-    <a href="memory.html" class="nav-btn">Игра с нашими фото →</a>
-    <a href="invitation.html" class="nav-btn">Приглашение →</a>
+    <a href="index.html" class="nav-btn">← На главную</a>
+    <a href="memory.html" class="nav-btn">Найти пару фото →</a>
   </div>
 
-  <footer>Глеб & Настя forever 💕</footer>
+  <footer>Глеб & Настя</footer>
 </div>
 
 <script src="script.js"></script>
