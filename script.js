@@ -263,15 +263,7 @@ if (gameCanvas) {
 }
 
 // ────────────────────────────────────────
-// Memory Game
-// ────────────────────────────────────────
-
-// ────────────────────────────────────────
-// Memory Game — исправленная версия (можно продолжать после любого совпадения)
-// ────────────────────────────────────────
-
-// ────────────────────────────────────────
-// Memory Game — исправленная версия (можно продолжать после любого совпадения)
+// Memory Game — исправленная версия (продолжается после любого совпадения)
 // ────────────────────────────────────────
 
 const memoryGrid = document.getElementById('memoryGrid');
@@ -290,7 +282,11 @@ if (memoryGrid) {
   const totalPairs = photos.length / 2;
 
   function shuffle(array) {
-    return array.sort(() => Math.random() - 0.5);
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
   }
 
   function createMemoryBoard() {
@@ -317,21 +313,21 @@ if (memoryGrid) {
   }
 
   function flipCard(card) {
-    // Запрещаем клик, если:
-    // - уже 2 карточки открыты (ждём проверки)
-    // - карточка уже открыта
-    // - карточка уже совпала
+    // Блокируем клик, если:
+    // 1. Уже 2 карточки открыты (ждём анимацию и проверку)
+    // 2. Эта карточка уже открыта
+    // 3. Эта карточка уже совпала
     if (flippedCards.length >= 2 || card.classList.contains('flipped') || card.classList.contains('matched')) {
       return;
     }
 
-    // Переворачиваем карточку
+    // Переворачиваем
     card.classList.add('flipped');
     flippedCards.push(card);
 
-    // Если открыто ровно 2 — проверяем совпадение
+    // Если открыто 2 — запускаем проверку с небольшой задержкой (для анимации)
     if (flippedCards.length === 2) {
-      setTimeout(checkForMatch, 600); // небольшая задержка для анимации
+      setTimeout(checkForMatch, 600);
     }
   }
 
@@ -345,19 +341,27 @@ if (memoryGrid) {
       if (pairsFound) pairsFound.textContent = matchedPairs;
       updateLove(5);
 
+      // Добавляем класс matched и визуальную индикацию
       card1.classList.add('matched');
       card2.classList.add('matched');
 
-      // Звук и конфетти
+      // Звук совпадения
       const matchSound = document.getElementById('matchSound');
       if (matchSound) {
         matchSound.currentTime = 0;
         matchSound.play().catch(() => {});
       }
-      confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
 
+      confetti({
+        particleCount: 60,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+
+      // Очищаем массив открытых
       flippedCards = [];
 
+      // Победа?
       if (matchedPairs === totalPairs) {
         setTimeout(() => {
           document.getElementById('memoryResult')?.classList.remove('hidden');
@@ -374,7 +378,7 @@ if (memoryGrid) {
     }
   }
 
-  // Перезапуск игры
+  // Кнопка перезапуска
   document.getElementById('restartMemory')?.addEventListener('click', createMemoryBoard);
 
   // Запуск при загрузке страницы
